@@ -19,7 +19,8 @@ SuperNodes, so you do not need a GPU.
 | 3 | Connect an agent to the federation | Retrieve an approved aggregate, then handle invalid requests and missing evidence |
 
 The architecture and first training run are guided demonstrations. You are
-welcome to run along. The coding exercises are in
+welcome to run along. For the coding exercises, use the
+[three notebooks](notebooks/README.md), or follow the command-line instructions in
 [federated analytics](docs/analytics.md) and [the agent](docs/agent.md).
 If you finish early, pick an [extension](docs/extensions.md), including connecting
 your own SuperNode.
@@ -29,6 +30,7 @@ your own SuperNode.
 | Resource | Where to go |
 | --- | --- |
 | Setup and account access | [Getting started](docs/setup.md) |
+| Interactive exercise worksheets | [Open the notebooks](notebooks/README.md) |
 | Exercise 1: digit counts | [Global histogram](docs/analytics.md#1-how-many-of-each-digit) |
 | Exercise 2: ink statistics | [The ink question](docs/analytics.md#2-which-digit-uses-the-most-ink) |
 | Exercises 3 and 4: agent tools | [Build the agent](docs/agent.md) |
@@ -60,5 +62,5 @@ retrieves an approved global report held by the nodes. The coordinator can see
 individual node summaries; this workshop does not add secure aggregation or
 differential privacy.
 
-This repository contains the guide and run configurations. Download and edit the
-apps from Hub when the exercises begin.
+This repository contains the guide, exercise notebooks and run configurations.
+Download and edit the apps from Hub when the exercises begin.

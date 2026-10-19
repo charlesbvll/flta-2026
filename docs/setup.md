@@ -60,6 +60,7 @@ cd ..
 flta-2026/
   configs/                         run configurations from this guide
   docs/                            exercise instructions
+  notebooks/                       interactive exercise worksheets
   work/
     paris-mnist-fl/                 learning and analytics app
     paris-federation-agent/         agent app
@@ -68,6 +69,10 @@ flta-2026/
 The `work/` directory is ignored by Git. Keep your exercise changes there or in
 your own repository. If you already downloaded an app, keep your edits rather
 than overwriting its directory with another download.
+
+To work through the exercises in Jupyter, follow the
+[notebook setup](../notebooks/README.md#open-the-notebooks). This adds Jupyter to
+the same environment; it does not require local training dependencies.
 
 ## Run along with the training demonstration
 
