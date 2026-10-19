@@ -94,23 +94,24 @@ rounding before taking a square root.
 
 ### Check uneven contributions
 
-This synthetic example has one image at the first site and two at the second.
-It does not use MNIST or contact the federation.
+This synthetic example has one image at the first site and three at the second.
+Digit 2 has different counts at the two sites, so averaging its local means
+will give the wrong answer. This does not use MNIST or contact the federation.
 
 ```sh
 python - <<'PY'
 import numpy as np
 from mnist_fl.analytics_student import local_moments, merge_moments
 
-images = np.stack([np.full(784, value) for value in [0.2, 0.8, 0.5]])
-labels = np.array([2, 2, 7])
+images = np.stack([np.full(784, value) for value in [0.2, 0.8, 0.8, 0.5]])
+labels = np.array([2, 2, 2, 7])
 reports = [local_moments(images[:1], labels[:1]),
            local_moments(images[1:], labels[1:])]
 result = merge_moments(reports)
-assert sum(result["counts"]) == 3
-assert result["counts"][2] == 2
-assert np.isclose(result["mean"][2], 0.5)
-assert np.isclose(result["std"][2], 0.3)
+assert sum(result["counts"]) == 4
+assert result["counts"][2] == 3
+assert np.isclose(result["mean"][2], 0.6)
+assert np.isclose(result["std"][2], np.sqrt(0.08))
 assert np.isclose(result["std"][7], 0.0)
 assert result["mean"][0] is None and result["std"][0] is None
 print("Tiny moments checks passed")
