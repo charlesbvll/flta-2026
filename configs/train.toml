@@ -1,0 +1,10 @@
+task = "train"
+num-server-rounds = 3
+num-clients = 3
+partition = "iid"
+seed = 42
+local-epochs = 1
+learning-rate = 0.15
+fraction-train = 1.0
+save-output = false
+publish-release = false
