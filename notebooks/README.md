@@ -8,13 +8,12 @@ Use these alongside the guide, with your downloaded Hub apps in `work/`:
 
 Edit the app files in your editor. Rerun a notebook's check cell after saving;
 it loads the edited source again. An unfinished function should fail its check.
-The notebooks select student code throughout and contain no implementations of
-the functions you are asked to write.
 
 ## Open the notebooks
 
-Complete [setup](../docs/setup.md), including the Hub downloads when available.
-From the guide's root, with its virtual environment activated:
+Complete [setup](../docs/setup.md) and download the MNIST app for notebooks 1 and
+2. The agent app is released separately before notebook 3. From the guide's root,
+with its virtual environment activated:
 
 ```sh
 uv pip install -r requirements-notebooks.txt
@@ -34,7 +33,7 @@ stops the local stream; check the submitted run before launching it again.
 
 For the agent, use the local synthetic checks first, then launch `flwr chat` in
 a terminal as described in notebook 3. Model-free Chat still queries the deployed
-nodes. Synthetic checks do not demonstrate deployed access.
+nodes.
 
 Use the blank observation cells to keep your results. Before sharing notebooks
 back to this repository, clear all outputs and execution counts, then save.

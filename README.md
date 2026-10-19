@@ -14,7 +14,7 @@ SuperNodes, so you do not need a GPU.
 
 | Session | What we will do | Hands-on goal |
 | --- | --- | --- |
-| 1 | Daniel's remote introduction, a walkthrough of Flower's architecture and a first run | Recover the federation's digit distribution |
+| 1 | Flower's architecture and a first federated learning run | Recover the federation's digit distribution |
 | 2 | Compute statistics over distributed data | Find which digit uses the most ink and measure its variability |
 | 3 | Connect an agent to the federation | Retrieve an approved aggregate, then handle invalid requests and missing evidence |
 
@@ -40,25 +40,26 @@ your own SuperNode.
 The shared federation is `@charles/flta`. The optional node challenge uses
 `@charles/flta-playground`, after checking with Charles.
 
-The apps will be distributed through [Flower Hub](https://flower.ai/apps) under
+The apps are distributed through [Flower Hub](https://flower.ai/apps) under
 `charles`, separately from this guide:
 
-- [MNIST learning and analytics](https://flower.ai/apps/charles/paris-mnist-fl/): `@charles/paris-mnist-fl==0.1.0`
-- [Federation agent](https://flower.ai/apps/charles/paris-federation-agent/): `@charles/paris-federation-agent==0.1.0`
+- [MNIST learning and analytics](https://flower.ai/apps/charles/paris-mnist-fl/): `@charles/paris-mnist-fl==0.1.0` — available now
+- [Federation agent](https://flower.ai/apps/charles/paris-federation-agent/): `@charles/paris-federation-agent==0.1.0` — released before the agent exercise
 
-App publication is still pending. Charles will confirm when downloads are ready
-and announce any version change here. You can complete the environment and
-account setup first.
+Start with the MNIST app and the first two notebooks. Charles will announce when
+the agent starter is ready to download for the third notebook.
 
 ## What data moves?
 
-The exercises use public MNIST images, split between three deployed SuperNodes
-with Flower Datasets. Analytics runs use a fixed subset of 6,000 training images.
+The exercises use MNIST, a public dataset of handwritten digit images, split
+between three deployed SuperNodes with Flower Datasets. Analytics runs use a fixed
+subset of 6,000 training images.
 The learning demonstration evaluates on a separate set of 900 test images.
 
 For analytics, each node computes a small summary of its own partition. The
 coordinator combines those summaries without requesting images. Later, the agent
-retrieves an approved global report held by the nodes. The coordinator can see
+retrieves a global report that Charles has published for the agent exercise
+(the "approved report"). The coordinator can see
 individual node summaries; this workshop does not add secure aggregation or
 differential privacy.
 

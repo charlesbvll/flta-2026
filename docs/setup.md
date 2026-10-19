@@ -19,7 +19,7 @@ flwr --version
 
 In PowerShell, activate with `.venv\Scripts\Activate.ps1` instead of `source`.
 Use the workshop's Flower version even if you already have another environment.
-The OpenAI package is used by the agent's local harness; installing it does not
+The OpenAI package is used by the agent's local checks; installing it does not
 require an API key. You do not need a personal model API key for the exercises.
 
 This environment is enough to edit the apps, run the small local checks and
@@ -44,17 +44,25 @@ your environment.
 
 ## Download the apps
 
-Once Charles confirms that the Hub releases are available:
+The MNIST app is available now. Download version `0.1.0`:
 
 ```sh
 mkdir -p work
 cd work
 flwr new @charles/paris-mnist-fl==0.1.0
+cd ..
+```
+
+The agent starter is released separately before the agent exercise. Download it
+then, from the guide root:
+
+```sh
+cd work
 flwr new @charles/paris-federation-agent==0.1.0
 cd ..
 ```
 
-`flwr new` downloads editable app source. Your workspace should now contain:
+`flwr new` downloads editable app source. After both downloads, your workspace contains:
 
 ```text
 flta-2026/

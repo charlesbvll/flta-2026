@@ -5,6 +5,10 @@ assigns each node its own partition of the same fixed 6,000-image MNIST training
 subset. The app handles loading, messages and result validation; you implement
 the local summaries and their aggregation.
 
+We compare two ways of assigning data: **IID** randomly distributes examples
+across nodes, while **label-skew** gives nodes different digit distributions.
+Both use the same images overall.
+
 Work in `work/paris-mnist-fl`. The file to edit is
 `mnist_fl/analytics_student.py`. Leave the transport and data-loading code as
 provided for the core exercises.

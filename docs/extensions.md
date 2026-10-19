@@ -25,12 +25,13 @@ exploratory runs, not in the shared approved report.
 - Add local cases for duplicate replies, wrong request correlation and collection deadlines
 - Explain and test the collector's fixed-cohort checks, then implement a collector of your own for the analytics report format
 - Copy `federation_agent/student_loop_template.py` to `federation_agent/student_loop.py`, complete the loop and select `loop-implementation = "student"`
-- Use the harness's `--student-loop`, `--scenario tool-limit` and `--scenario turn-limit` options to test bounded execution
+- Use the local check command's `--student-loop`, `--scenario tool-limit` and `--scenario turn-limit` options to test execution limits
 
-The `student.py` collector starter initially targets the separate FL evaluation
-report. To use it for this course's ink statistics, you must add analytics source
-and schema support; changing the implementation selector alone is insufficient.
-Keep the guided implementation working while you develop the extension.
+Keep the guided implementation working while you develop an extension. If you
+write your own collector, make it read the analytics report used in this course.
+The provided model exchange handles one round of tool requests. The optional
+student loop should support repeated model/tool turns, with a shared tool-call
+budget and matching call IDs. Test it with repeated calls and both limit cases.
 
 ## Connect your own SuperNode
 
@@ -41,7 +42,6 @@ main three-node federation unchanged during the core exercises.
 This needs more setup than submitting an app: a supported host, the app's local
 dependencies and dataset cache, a node key, account membership and a running
 SuperNode process. Use a workshop machine intended for running the exercise apps.
-The hosted account setup and machine dependencies may take longer than the code.
 
 1. Ask Charles for playground membership, your partition ID and the intended participant count
 2. Prepare Python 3.12 and the downloaded MNIST app's dependencies, including Flower Datasets and PyTorch, using its `pyproject.toml`
@@ -68,8 +68,7 @@ ssh-keygen -t ecdsa -b 384 -N "" -f "$HOME/flta-node/node-key"
 uv run flwr supernode register "$HOME/flta-node/node-key.pub" supergrid --name "FLTA my-node"
 ```
 
-Record the returned node ID. Replace `NODE_ID` below with that number. You add
-the node you own; sending its ID to Charles is not the membership step.
+Replace `NODE_ID` below with the returned number to add your node to the federation.
 
 ```sh
 uv run flwr federation add-supernode NODE_ID @charles/flta-playground supergrid
@@ -80,7 +79,7 @@ your machine. In this terminal:
 
 ```sh
 uv run flower-supernode \
-  --superlink fleet-supergrid.flower.ai:443 \
+  --superlink api.flower.ai:443 \
   --auth-supernode-private-key "$HOME/flta-node/node-key" \
   --host 127.0.0.1 --port 9094 \
   --node-config "partition-id=PARTITION_ID workshop-dir=\"$HOME/flta-node/reports\""
@@ -95,8 +94,7 @@ uv run flwr federation list supergrid --federation @charles/flta-playground
 
 **Checkpoint:** your node is online in the first listing and present in the
 federation listing. Registration alone does not complete the challenge. The
-first app run will load and cache the public dataset locally; that cache belongs
-to the OS user running the node.
+first app run will download and cache the public dataset locally.
 
 If Charles assigns a four-node experiment, use four distinct partition IDs
 `0–3`, `num-clients = 4` and `publish-release = false`. This is a new experiment;
