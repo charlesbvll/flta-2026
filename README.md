@@ -28,3 +28,10 @@ The complete app is distributed through [Flower Hub](https://flower.ai/apps/char
 as `@charles/fedprox`. Download it once the release is available. Its source and run
 configurations come together; this repository contains the guide and
 [background references](docs/resources.md).
+
+## Optional: vertical federated learning
+
+Follow the [VFL walkthrough](docs/vertical-fl.md) to explore a different setup:
+feature parties hold different columns for the same passengers and train a split
+neural network by exchanging embeddings and gradients. It includes a short simulation
+and questions about alignment, synchronization and privacy.

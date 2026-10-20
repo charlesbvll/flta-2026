@@ -4,6 +4,8 @@
 
 - [FedProx walkthrough](fedprox.md)
 - [FedProx app on Flower Hub](https://flower.ai/apps/charles/fedprox/)
+- [Optional vertical FL walkthrough](vertical-fl.md)
+- [Official Flower vertical FL example](https://flower.ai/docs/examples/vertical-fl.html)
 - [Install uv](https://docs.astral.sh/uv/getting-started/installation/)
 
 ## Flower
