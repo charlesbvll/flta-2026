@@ -20,10 +20,10 @@ requesting any images at the coordinator.
 
 Implement two functions:
 
-| Function | Input | Return |
-| --- | --- | --- |
-| `local_histogram(labels)` | This node's digit labels | A list of ten Python integer counts, indexed by digit |
-| `merge_histograms(reports)` | A list of distinct node reports, each containing `counts` | A list of ten global counts |
+| Function                    | Input                                                     | Return                                                |
+| --------------------------- | --------------------------------------------------------- | ----------------------------------------------------- |
+| `local_histogram(labels)`   | This node's digit labels                                  | A list of ten Python integer counts, indexed by digit |
+| `merge_histograms(reports)` | A list of distinct node reports, each containing `counts` | A list of ten global counts                           |
 
 Include a zero for a digit that does not occur locally. A message should contain
 the ten counts, not labels or image identifiers.
@@ -74,10 +74,10 @@ these image-level values**, separately for each digit.
 
 Implement the other two functions in `analytics_student.py`:
 
-| Function | Input | Return |
-| --- | --- | --- |
-| `local_moments(images, labels)` | Normalized NumPy images of shape `(N, 784)` and their labels | `counts`, `sums`, `sumsq`, each a ten-element Python list |
-| `merge_moments(reports)` | Distinct reports with those three fields | The pooled `counts`, `sums`, `sumsq`, plus ten-element `mean` and `std` lists |
+| Function                        | Input                                                        | Return                                                                        |
+| ------------------------------- | ------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| `local_moments(images, labels)` | Normalized NumPy images of shape `(N, 784)` and their labels | `counts`, `sums`, `sumsq`, each a ten-element Python list                     |
+| `merge_moments(reports)`        | Distinct reports with those three fields                     | The pooled `counts`, `sums`, `sumsq`, plus ten-element `mean` and `std` lists |
 
 For a digit with no images globally, return `None` for its mean and standard
 deviation. For a missing local digit, its count, sum and squared sum are zero.
@@ -138,7 +138,7 @@ this standard deviation and uncertainty in an estimated mean.
 
 ## From statistics to an agent
 
-Charles will publish one complete global moments report for the next exercise.
+Wait for one complete global moments report to be published before the next exercise.
 Your exploratory runs do not overwrite it. The approved report includes its
 source run and data definition, so an answer can be traced back to a particular
 computation.

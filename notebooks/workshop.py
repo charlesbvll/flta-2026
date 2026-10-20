@@ -47,6 +47,15 @@ def analytics_student(root):
     return _load_student(root, "paris-mnist-fl", "mnist_fl.analytics_student")
 
 
+def aggregation_student(root):
+    app = app_directory(root, "paris-mnist-fl")
+    if not (app / "mnist_fl/aggregation_student.py").is_file():
+        raise FileNotFoundError(
+            "This exercise needs MNIST app 0.1.1; see docs/setup.md"
+        )
+    return _load_student(root, "paris-mnist-fl", "mnist_fl.aggregation_student")
+
+
 def guided_agent(root):
     return _load_student(root, "paris-federation-agent", "federation_agent.guided")
 
@@ -62,11 +71,16 @@ def _command_text(command):
     return subprocess.list2cmdline(command) if os.name == "nt" else shlex.join(command)
 
 
-def run_analytics(root, mission, partition, *, execute=False, federation="@charles/flta"):
+def run_analytics(
+    root, mission, partition, *, execute=False, federation="@charles/flta"
+):
     """Preview or submit student analytics; preserve its config and streamed log."""
     root = Path(root)
     app = app_directory(root, "paris-mnist-fl")
-    if mission not in {"histogram", "moments"} or partition not in {"iid", "label-skew"}:
+    if mission not in {"histogram", "moments"} or partition not in {
+        "iid",
+        "label-skew",
+    }:
         raise ValueError("Choose histogram or moments, and iid or label-skew")
     cfg = tomllib.loads((root / "configs" / f"{mission}.toml").read_text())
     expected = {
@@ -83,17 +97,91 @@ def run_analytics(root, mission, partition, *, execute=False, federation="@charl
     ):
         raise ValueError("Use the three-node, non-publishing student exercise config")
     cfg["partition"] = partition
+    return _submit(
+        root,
+        app,
+        cfg,
+        f"{mission}-{partition}",
+        "FEDERATION_ANALYTICS ",
+        {"mission": mission, "total_count": 6000},
+        execute,
+        federation,
+    )
+
+
+def run_training(
+    root, aggregation, case="iid-clean", *, execute=False, federation="@charles/flta"
+):
+    """Compare model aggregators on three deployed nodes, without publishing a report."""
+    root = Path(root)
+    app = app_directory(root, "paris-mnist-fl")
+    if not (app / "mnist_fl/aggregation_student.py").is_file():
+        raise FileNotFoundError(
+            "This exercise needs MNIST app 0.1.1; see docs/setup.md"
+        )
+    cases = {
+        "iid-clean": ("iid", -1),
+        "iid-scaled": ("iid", 2),
+        "label-skew-clean": ("label-skew", -1),
+    }
+    if aggregation not in {"fedavg", "median"} or case not in cases:
+        raise ValueError("Choose fedavg or median, and a documented experiment case")
+    cfg = tomllib.loads((root / "configs/aggregation.toml").read_text())
+    expected = {
+        "task": "train",
+        "aggregation-implementation": "student",
+        "num-clients": 3,
+        "fraction-train": 1.0,
+        "save-output": False,
+        "publish-release": False,
+    }
+    if any(type(cfg.get(k)) is not type(v) or cfg[k] != v for k, v in expected.items()):
+        raise ValueError(
+            "Use the three-node, non-publishing aggregation exercise config"
+        )
+    partition, fault = cases[case]
+    cfg.update(
+        aggregation=aggregation,
+        partition=partition,
+        **{"fault-partition": fault, "fault-scale": 20.0},
+    )
+    return _submit(
+        root,
+        app,
+        cfg,
+        f"{case}-{aggregation}",
+        "FEDERATION_AGGREGATION ",
+        {
+            "aggregation": aggregation,
+            "partition": partition,
+            "fault-partition": fault,
+            "test_count": 900,
+            "rounds": cfg["num-server-rounds"],
+        },
+        execute,
+        federation,
+    )
+
+
+def _submit(root, app, cfg, label, marker, expected, execute, federation):
     folder = root / "outputs" / "notebook-runs"
     folder.mkdir(parents=True, exist_ok=True)
-    stem = f"{mission}-{partition}-{uuid.uuid4().hex[:8]}"
+    stem = f"{label}-{uuid.uuid4().hex[:8]}"
     config = folder / f"{stem}.toml"
     config.write_text(
         "".join(f"{key} = {json.dumps(value)}\n" for key, value in cfg.items()),
         encoding="utf-8",
     )
     command = [
-        _flwr(), "run", ".", "supergrid", "--federation", federation,
-        "--run-config", str(config), "--stream",
+        _flwr(),
+        "run",
+        ".",
+        "supergrid",
+        "--federation",
+        federation,
+        "--run-config",
+        str(config),
+        "--stream",
     ]
     print(f"App directory: {app}")
     print(_command_text(command))
@@ -132,14 +220,19 @@ def run_analytics(root, mission, partition, *, execute=False, federation="@charl
         raise RuntimeError(f"Flower exited with status {returncode}; inspect {log}")
     text = re.sub(r"\x1b\[[0-?]*[ -/]*[@-~]", "", log.read_text(encoding="utf-8"))
     for line in reversed(text.splitlines()):
-        if "FEDERATION_ANALYTICS " in line:
-            payload = line.split("FEDERATION_ANALYTICS ", 1)[1]
+        if marker in line:
+            payload = line.split(marker, 1)[1]
             summary, _ = json.JSONDecoder().raw_decode(payload)
-            if summary.get("mission") != mission or summary.get("total_count") != 6000:
+            if any(summary.get(key) != value for key, value in expected.items()):
                 raise ValueError(f"Unexpected aggregate; inspect {log}")
-            return {"summary": summary, "log": log, "config": config}
+            return {
+                "summary": summary,
+                "log": log,
+                "config": config,
+                "run_config": dict(cfg),
+            }
     raise RuntimeError(
-        f"No completed analytics result in {log}; check the run before resubmitting"
+        f"No completed result in {log}; check the run before resubmitting"
     )
 
 
@@ -147,12 +240,24 @@ def replay_agent(root, *, scenario="complete", repeat=1):
     """Run the downloaded app's synthetic harness against its guided student code."""
     app = app_directory(root, "paris-federation-agent")
     command = [
-        sys.executable, "-c", "from federation_agent.cli import main; main()",
-        "--source", "analytics", "--guided", "--scenario", scenario,
-        "--repeat", str(repeat),
+        sys.executable,
+        "-c",
+        "from federation_agent.cli import main; main()",
+        "--source",
+        "analytics",
+        "--guided",
+        "--scenario",
+        scenario,
+        "--repeat",
+        str(repeat),
     ]
     result = subprocess.run(
-        command, cwd=app, text=True, capture_output=True, timeout=60, check=False,
+        command,
+        cwd=app,
+        text=True,
+        capture_output=True,
+        timeout=60,
+        check=False,
     )
     print(result.stdout, end="")
     if result.returncode:

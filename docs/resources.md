@@ -25,6 +25,7 @@ Use the announced workshop versions so your code matches the deployed nodes.
 - [MNIST on Hugging Face](https://huggingface.co/datasets/ylecun/mnist), the handwritten digit dataset used in the exercises
 - [Communication-Efficient Learning of Deep Networks from Decentralized Data](https://proceedings.mlr.press/v54/mcmahan17a.html), the FedAvg paper
 - [A Field Guide to Federated Optimization](https://arxiv.org/abs/2107.06917), guidance on designing and evaluating federated learning experiments
+- [Byzantine-Robust Distributed Learning](https://proceedings.mlr.press/v80/yin18a.html), analysis of coordinate-wise median and trimmed-mean aggregation under stated assumptions
 
 ## Tools
 

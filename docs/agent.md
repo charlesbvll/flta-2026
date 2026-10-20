@@ -3,7 +3,7 @@
 The analytics app computed an answer from distributed data. Now make an agent
 retrieve the approved result from the deployed SuperNodes and explain it.
 
-Download the agent starter when Charles releases it; see the
+Download the agent starter once it is released; see the
 [app download instructions](setup.md#download-the-apps).
 
 Work in `work/paris-federation-agent`. The main file to edit is
@@ -22,8 +22,8 @@ report, including its count, standard deviation and source run.
 Complete the three TODOs in `guided.py`:
 
 1. Define the tool's name and allowed arguments (its schema): `get_federation_summary`, accepting an empty JSON object and no other arguments
-2. Validate the requested tool name and JSON arguments before collection
-3. Store the collected report under `approved_aggregate` and reuse it during the same agent run
+1. Validate the requested tool name and JSON arguments before collection
+1. Store the collected report under `approved_aggregate` and reuse it during the same agent run
 
 The tool exposes one approved report. It does not accept node IDs, filters,
 arbitrary queries or requests for examples. Keep node transport details out of
@@ -44,8 +44,8 @@ loop-implementation = "provided"
 model-free = true
 ```
 
-Replace `NODE_0,NODE_1,NODE_2` with the three decimal node IDs Charles provides,
-in one comma-separated string without spaces. Use his announced release ID if
+Replace `NODE_0,NODE_1,NODE_2` with the three announced decimal node IDs,
+in one comma-separated string without spaces. Use the announced release ID if
 it differs. `paris-mnist-three` identifies the group of nodes that produced the
 report (its cohort); it is separate from the federation name.
 
@@ -79,8 +79,8 @@ Which digit has the highest mean ink? Include its count, standard deviation and 
 
 Start with `model-free = true`. This still sends real requests to the deployed
 nodes and returns checked JSON; it does not call a language model. Once that
-works, Charles will give the model settings for a natural-language answer. Set
-`model-free = false` when instructed and reload with `/load .`.
+works, wait for the model settings for a natural-language answer. Apply those
+settings, set `model-free = false` and reload with `/load .`.
 
 The supplied model exchange handles one round of tool requests followed by an
 explanation. A multi-turn agent loop is an optional extension.
@@ -99,15 +99,15 @@ synthetic run alone does not complete this checkpoint.
 
 Test the argument checks and caching you added to `guided.py`:
 
-| Call or condition | Expected behaviour |
-| --- | --- |
-| `get_federation_summary` with the JSON string `{}` | Collect and return the approved aggregate |
-| An unknown tool name | Return an error without collection |
-| Extra arguments, such as `{"node_id": "123"}` | Return an error without collection |
-| Malformed JSON or a JSON array | Return an error without collection |
-| A repeated valid call in the same agent run | Reuse the first result |
-| Missing or conflicting evidence | Return a generic error, with no partial report |
-| A repeated call after collection failed | Reuse the failure, without another collection |
+| Call or condition                                  | Expected behaviour                             |
+| -------------------------------------------------- | ---------------------------------------------- |
+| `get_federation_summary` with the JSON string `{}` | Collect and return the approved aggregate      |
+| An unknown tool name                               | Return an error without collection             |
+| Extra arguments, such as `{"node_id": "123"}`      | Return an error without collection             |
+| Malformed JSON or a JSON array                     | Return an error without collection             |
+| A repeated valid call in the same agent run        | Reuse the first result                         |
+| Missing or conflicting evidence                    | Return a generic error, with no partial report |
+| A repeated call after collection failed            | Reuse the failure, without another collection  |
 
 The cache belongs to one agent run. A new Chat prompt can start a new collection.
 
