@@ -1,8 +1,0 @@
-task = "analytics"
-analytics-mission = "histogram"
-analytics-implementation = "student"
-num-clients = 3
-partition = "iid"
-seed = 42
-save-output = false
-publish-release = false

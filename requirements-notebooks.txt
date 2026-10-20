@@ -1,5 +1,0 @@
-flwr==1.40.0
-numpy==2.4.3
-openai==2.28.0
-jupyterlab==4.6.4
-ipykernel==7.4.0
