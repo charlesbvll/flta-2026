@@ -191,13 +191,13 @@ Wait for your invitation, then accept it and register your node from the app dir
 ```sh
 uvx flwr login supergrid
 uvx flwr federation invite accept @charles/flta-laptops supergrid
-mkdir -p "$HOME/flta-fedprox"
-ssh-keygen -t ecdsa -b 384 -N "" -f "$HOME/flta-fedprox/node-key"
-uvx flwr supernode register "$HOME/flta-fedprox/node-key.pub" supergrid --name "FLTA my-laptop"
+ssh-keygen -t ecdsa -b 384 -N "" -f node.key
+uvx flwr supernode register node.key.pub supergrid --name "FLTA my-laptop"
 ```
 
 Register a key only once. If it is already registered, reuse its existing node ID.
-Keep the private key on your machine. Set `NODE_ID` to the registration result:
+The keys stay in this app directory and are ignored by Git and app uploads.
+Set `NODE_ID` to the registration result:
 
 ```sh
 NODE_ID="replace-with-the-returned-node-id"
@@ -214,7 +214,7 @@ PARTITION_ID=0
 uv run python -m fedprox_app.prepare --partition-id "$PARTITION_ID" --num-partitions "$N"
 uv run flower-supernode \
     --superlink api.flower.ai:443 \
-    --auth-supernode-private-key "$HOME/flta-fedprox/node-key" \
+    --auth-supernode-private-key node.key \
     --host 127.0.0.1 --port 9094 \
     --node-config "partition-id=$PARTITION_ID"
 ```
